@@ -36,3 +36,18 @@ LogisticRegression(learning_rate=0.0001, n_iterations=5000) -> accuracy = 92.98%
 
 
 ![logistic_regression.png](MachineLearningFromScratch/LogisticRegression/logistic_regression.png)
+
+
+---
+
+
+**_Decision Tree_**
+
+
+DecisionTree(max_depth=10) -> accuracy: 90.35%
+
+
+DecisionTree(max_depth=30) -> accuracy: 93.86%
+
+![decision_tree.png](MachineLearningFromScratch%2FDecisionTrees%2Fdecision_tree.png)
+

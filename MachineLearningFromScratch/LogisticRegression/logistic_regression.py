@@ -80,7 +80,7 @@ logistic_regression_model_v2_predictions = y_pred = logistic_regression_model_v2
 lrm_v2_accuracy = (np.sum(logistic_regression_model_v2_predictions == y_test) / len(y_test))
 print(f"LogisticRegression(learning_rate=0.0001, n_iterations=5000) -> accuracy = {lrm_v2_accuracy * 100:.2f}%")
 
-# ------------------------------------------------------------------------------------------------- Plot Linear Fittings
+# ----------------------------------------------------------------------------------------------------- Plot Predictions
 plt.figure(figsize=(10, 6))
 plt.rcParams["font.family"] = "serif"
 plt.rcParams["font.serif"] = "Times New Roman"
