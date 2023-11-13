@@ -2,7 +2,7 @@
 name = "machinelearningfromscratch"
 version = "0.1.0"
 description = ""
-authors = ["ThomasStalley <tstalley@realla.co>"]
+authors = ["ThomasStalley <t.stalley@outlook.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
