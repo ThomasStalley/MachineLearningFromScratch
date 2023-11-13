@@ -1,6 +1,6 @@
-### [Machine Learning From Scratch](https://www.youtube.com/playlist?list=PLcWfeUsA
+### Machine Learning From Scratch
 
-ys2k_xub3mHks85sBHZvg24Jd)
+https://www.youtube.com/playlist?list=PLcWfeUsAys2k_xub3mHks85sBHZvg24Jd
 
 ---
 
@@ -39,13 +39,13 @@ LogisticRegression(learning_rate=0.0001, n_iterations=5000) -> accuracy = 92.98%
 
 **_Decision Tree_**
 
-![decision_tree_visualised.png](MachineLearningFromScratch%2FDecisionTrees%2Fdecision_tree_visualised.png)
-
 DecisionTree(max_depth=10) -> accuracy: 90.35%
 
 DecisionTree(max_depth=30) -> accuracy: 93.86%
 
 ![decision_tree.png](MachineLearningFromScratch%2FDecisionTrees%2Fdecision_tree.png)
+
+![decision_tree_visualised.png](MachineLearningFromScratch%2FDecisionTrees%2Fdecision_tree_visualised.png)
 
 ---
 
