@@ -5,30 +5,31 @@ import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
+"""
+Tree Features:
+-> root node = first node, containing all data points.
+-> node = point containing data points, after one or more splittings of the data, due to decision.
+-> terminal node = leaf node = the endpoint node, reached via a final decision (non leaf node is internal node).
+-> branch = each node splits into two branches, after a decision.
 
-# Tree Features:
-# -> root node = first node, containing all data points.
-# -> leaf node = node, after one or more splittings of the data, due to decision.
-# -> terminal node = the endpoint node, reached via a final decision.
-# -> branch = each node splits into two branches, after a decision.
+Decisions:
+-> Need to decide the order of features on which we split data on.
+-> Need to decide the point within numerical features on which we split data on.
+-> Need to decide when we stop splitting data.
 
-# Decisions:
-# -> Need to decide the order of features on which we split data on.
-# -> Need to decide the point within numerical features on which we split data on.
-# -> Need to decide when we stop splitting data.
+Investigation:
+-> Calculate information gain with each splitting.
+-> Divide set with feature/value that gives most information gain.
+-> Repeat this for all created branches, until a stopping criteria is reached.
 
-# Investigation:
-# -> Calculate information gain with each splitting.
-# -> Divide set with feature/value that gives most information gain.
-# -> Repeat this for all created branches, untila stopping criteria is reached.
+Definitions:
+-> Information Gain = IG = Entropy(parent) - weighted_average * Entropy(children)
+-> Stopping Criteria = max depth, min number of samples, min impurity decrease (required level of entropy change).
 
-# Definitions:
-# -> Information Gain = IG = Entropy(parent) - weighted_avergae * Entropy(children)
-# -> Stopping Criteria = max depth, min number of samples, min impurity decrease (required level of entropy change).
-
-# Testing:
-# -> Follow tree until you reach a leaf node.
-# -> Return most common class label in this leaf node.
+Testing:
+-> Follow tree until you reach a leaf node.
+-> Return most common class label in this leaf node.
+"""
 
 
 # ----------------------------------------------------------------------------------------------------------- Node Class
@@ -40,10 +41,10 @@ class Node:
         self.right = right
         self.value = value
 
-    def is_terminal_node(self):
+    def is_leaf_node(self):
         """Terminal node will have been given a value attribute, that is not None, which we check for here."""
-        is_terminal_node = self.value is not None
-        return is_terminal_node
+        is_leaf_node = self.value is not None
+        return is_leaf_node
 
 
 # -------------------------------------------------------------------------------------------------- Decision Tree Class
@@ -150,13 +151,51 @@ class DecisionTree:
         """If terminal node is reached return the label prediction, if not, travel further down the tree."""
 
         # Check if tree is ready to return prediction:
-        if node.is_terminal_node():
+        if node.is_leaf_node():
             return node.value
 
         # See if datapoint follows left or right branch after splitting:
         if x_value[node.feature] <= node.threshold:
             return self._traverse_tree(x_value, node.left)
         return self._traverse_tree(x_value, node.right)
+
+    def plot_tree(self, feature_names, node=None, depth=0, x_pos=0.5, x_scale=0.5, y_scale=0.5, y_node=0.05):
+        """Plot the decision tree starting from a given node."""
+        if node is None:
+            node = self.root
+
+        y_pos = 1 - depth * y_scale
+
+        # If the node is a leaf, display its value:
+        if node.is_leaf_node():
+            leaf_label = {0: "Malignant", 1: "Benign"}.get(node.value)
+            plt.text(
+                x_pos,
+                y_pos - y_node,
+                leaf_label,
+                horizontalalignment="center",
+                verticalalignment="center",
+                color="#006400",
+                fontsize=8,
+            )
+            return
+
+        # If the node is not a leaf, display its feature and threshold:
+        feature_name = feature_names[node.feature]
+        feature_label = f"Feature: {feature_name}\nThreshold: {node.threshold}"
+        plt.text(x_pos, y_pos, feature_label, horizontalalignment="center", verticalalignment="center")
+
+        # Recursively plot left and right branches with updated x positions:
+        left_x_pos = x_pos - x_scale
+        right_x_pos = x_pos + x_scale
+
+        # Draw lines to children:
+        plt.plot([x_pos, left_x_pos], [y_pos - y_scale / 10, y_pos - y_scale], color="brown", linestyle="-", alpha=0.7)
+        plt.plot([x_pos, right_x_pos], [y_pos - y_scale / 10, y_pos - y_scale], color="brown", linestyle="-", alpha=0.7)
+
+        # Recursively call plot_tree function for each branch:
+        self.plot_tree(feature_names, node.left, depth + 1, left_x_pos, x_scale / 2, y_scale)
+        self.plot_tree(feature_names, node.right, depth + 1, right_x_pos, x_scale / 2, y_scale)
 
 
 # ----------------------------------------------------------------------------------------------------------- Test Model
@@ -175,6 +214,14 @@ another_decision_tree_model.fit(x_train, y_train)
 another_decision_tree_model_predictions = more_y_pred = another_decision_tree_model.predict(x_test)
 another_decision_tree_model_accuracy = np.sum(y_test == another_decision_tree_model_predictions) / len(y_test)
 print(f"DecisionTree(max_depth=30) accuracy: {another_decision_tree_model_accuracy * 100:.2f}%")
+
+# ---------------------------------------------------------------------------------------------- Visualise Decision Tree
+plt.figure(figsize=(12, 8))
+plt.rcParams['font.family'] = 'serif'
+decision_tree_model.plot_tree(feature_names=breast_cancer_data.feature_names)
+plt.axis('off')
+plt.show()
+
 # ----------------------------------------------------------------------------------------------------- Plot Predictions
 plt.figure(figsize=(10, 6))
 plt.rcParams["font.family"] = "serif"
@@ -183,7 +230,7 @@ plt.rcParams["font.serif"] = "Times New Roman"
 # Plot the predictions with the color coding:
 colors = ["orange" if prediction == truth else "blue" for prediction, truth in zip(y_pred, y_test)]
 plt.scatter(range(len(y_test)), y_pred, alpha=0.5, c=colors, edgecolors="w", s=100)
-plt.yticks([0, 1], ['Malignant (Cancerous)', 'Benign (Non-Cancerous)'])
+plt.yticks([0, 1], ["Malignant (Cancerous)", "Benign (Non-Cancerous)"])
 
 # Titles, labels and legend:
 plt.title("Decision Tree: Predicting if a tumor is cancerous.", fontsize=14)
